@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
 
 	memset(&local, 0, sizeof(local));
 	memset(&peer, 0, sizeof(peer));
+	memset(&bpc, 0, sizeof(bpc));
 
 	while ((opt = getopt(argc, argv, "aC:di:l:L:Mmp:v")) != -1) {
 		switch (opt) {
