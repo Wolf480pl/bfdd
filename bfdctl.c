@@ -62,8 +62,10 @@ typedef int (*control_recv_cb)(struct bfd_control_msg *, void *arg);
 int control_recv(int sd, control_recv_cb cb, void *arg);
 
 struct json_object *ctrl_new_json(void);
-void ctrl_add_peer_by_address(struct json_object *msg, struct bfd_peer_cfg *bpc);
-void ctrl_add_peer_by_label(struct json_object *msg, struct bfd_peer_cfg *bpc);
+void ctrl_add_peer_by_address(struct json_object *msg, struct json_object *peer_jo,
+			      struct bfd_peer_cfg *bpc);
+void ctrl_add_peer_by_label(struct json_object *msg, struct json_object *peer_jo,
+			    struct bfd_peer_cfg *bpc);
 
 int bcm_recv(struct bfd_control_msg *bcm, void *arg);
 int bcm_recv_exec(struct bfd_control_msg *bcm, void *arg);
@@ -88,6 +90,9 @@ void usage(void)
 		"\t-a: add peer\n"
 		"\t-d: delete peer\n"
 		"\t-L <label>: when deleting, find peer by label instead of by address\n"
+		"\t-j <peer json>: custom peer definition json (same syntax as config file)\n"
+		"\t                note: fields set through other options will override"
+				 " fields in the json\n"
 		"\t-i <ifname>: interface\n"
 		"\t-l <address>: local address (e.g. 192.168.0.1 or 2001:db8::100)\n"
 		"\t-m: multihop\n"
@@ -112,6 +117,7 @@ int main(int argc, char *argv[])
 	uint16_t cur_id;
 	bool mhop = false, verbose = false, monitor = false;
 	bool update_by_label = false, update_by_address = false;
+	struct json_object *peer_jo = NULL;
 	struct sockaddr_any local, peer;
 	struct bfd_peer_cfg bpc;
 	struct bcm_recv_exec_ctx bre_ctx;
@@ -123,7 +129,7 @@ int main(int argc, char *argv[])
 	memset(&peer, 0, sizeof(peer));
 	memset(&bpc, 0, sizeof(bpc));
 
-	while ((opt = getopt(argc, argv, "aC:dE:i:l:L:Mmp:v")) != -1) {
+	while ((opt = getopt(argc, argv, "aC:dE:i:j:l:L:Mmp:v")) != -1) {
 		switch (opt) {
 		case 'C':
 			ctl_path = optarg;
@@ -162,6 +168,14 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 			update_by_address = true;
+			break;
+
+		case 'j':
+			peer_jo = json_tokener_parse(optarg);
+			if (peer_jo == NULL) {
+				fprintf(stderr, "invalid json: %s\n", optarg);
+				exit(1);
+			}
 			break;
 
 		case 'l':
@@ -284,6 +298,9 @@ int main(int argc, char *argv[])
 	/* Fill the BFD peer configuration and convert it to JSON object */
 	jo = ctrl_new_json();
 
+	if (peer_jo == NULL)
+		peer_jo = json_object_new_object();
+
 	if (update_by_address) {
 		bpc.bpc_mhop = mhop;
 		if (ifname) {
@@ -297,7 +314,7 @@ int main(int argc, char *argv[])
 		bpc.bpc_peer = peer;
 		bpc.bpc_local = local;
 
-		ctrl_add_peer_by_address(jo, &bpc);
+		ctrl_add_peer_by_address(jo, peer_jo, &bpc);
 	}
 
 	if (update_by_label) {
@@ -306,7 +323,7 @@ int main(int argc, char *argv[])
 			strcpy(bpc.bpc_label, label);
 		}
 
-		ctrl_add_peer_by_label(jo, &bpc);
+		ctrl_add_peer_by_label(jo, peer_jo, &bpc);
 	}
 
 	/* Create the JSON string. */
@@ -523,10 +540,11 @@ struct json_object *ctrl_new_json(void)
 	return jo;
 }
 
-void ctrl_add_peer_by_label(struct json_object *msg, struct bfd_peer_cfg *bpc) {
-	struct json_object *peer_jo, *jo, *plist;
+void ctrl_add_peer_by_label(struct json_object *msg, struct json_object *peer_jo,
+			    struct bfd_peer_cfg *bpc)
+{
+	struct json_object *jo, *plist;
 
-	peer_jo = json_object_new_object();
 	if (peer_jo == NULL)
 		return;
 
@@ -543,11 +561,11 @@ void ctrl_add_peer_by_label(struct json_object *msg, struct bfd_peer_cfg *bpc) {
 	json_object_array_add(plist, peer_jo);
 }
 
-void ctrl_add_peer_by_address(struct json_object *msg, struct bfd_peer_cfg *bpc)
+void ctrl_add_peer_by_address(struct json_object *msg, struct json_object *peer_jo,
+			      struct bfd_peer_cfg *bpc)
 {
-	struct json_object *peer_jo, *jo, *plist;
+	struct json_object *jo, *plist;
 
-	peer_jo = json_object_new_object();
 	if (peer_jo == NULL)
 		return;
 
