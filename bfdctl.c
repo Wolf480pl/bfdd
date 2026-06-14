@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 			ifname = optarg;
 			if (strlen(ifname) > MAXNAMELEN) {
 				fprintf(stderr,
-					"Interface name too long (expected < %d, got %ld)\n",
+					"Interface name too long (expected < %d, got %zd)\n",
 					MAXNAMELEN, strlen(ifname));
 				exit(1);
 			}
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
 			label = optarg;
 			if (strlen(label) > MAXLABELLEN) {
 				fprintf(stderr,
-					"Label name too long (expected < %d, got %ld)\n",
+					"Label name too long (expected < %d, got %zd)\n",
 					MAXLABELLEN, strlen(label));
 				exit(1);
 			}
