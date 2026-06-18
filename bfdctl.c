@@ -38,6 +38,8 @@
 
 #include "bfdctl.h"
 
+#define BFDCTL_BACKWARDS_COMPAT 1
+
 /*
  * Internal types
  */
@@ -108,7 +110,8 @@ int main(int argc, char *argv[])
 	int csock;
 	int opt;
 	uint16_t cur_id;
-	bool mhop = false, verbose = false, monitor = false, update_by_label = false;
+	bool mhop = false, verbose = false, monitor = false;
+	bool update_by_label = false, update_by_address = false;
 	struct sockaddr_any local, peer;
 	struct bfd_peer_cfg bpc;
 	struct bcm_recv_exec_ctx bre_ctx;
@@ -158,6 +161,7 @@ int main(int argc, char *argv[])
 					MAXNAMELEN, strlen(ifname));
 				exit(1);
 			}
+			update_by_address = true;
 			break;
 
 		case 'l':
@@ -166,6 +170,7 @@ int main(int argc, char *argv[])
 					optarg);
 				exit(1);
 			}
+			update_by_address = true;
 			break;
 
 		case 'L':
@@ -185,6 +190,7 @@ int main(int argc, char *argv[])
 					optarg);
 				exit(1);
 			}
+			update_by_address = true;
 			break;
 
 		case 'M':
@@ -193,6 +199,7 @@ int main(int argc, char *argv[])
 
 		case 'm':
 			mhop = true;
+			update_by_address = true;
 			break;
 
 		case 'v':
@@ -221,12 +228,51 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	if (peer.sa_sin.sin_family == 0 && !update_by_label) {
-		if (monitor) {
+#if BFDCTL_BACKWARDS_COMPAT
+	if (peer.sa_sin.sin_family == 0 && !update_by_label && monitor) {
+		/*
+		 * Historically, when passing `-M` but no `-p`,
+		 * other options related to adding/deleting
+		 * (nonempty action, multihop, local address, local interface)
+		 * were allowed and simply ignored.
+		 * Preserve that behaviour for backwards compatibility.
+		 */
+		if (bmt != 0) {
+			fprintf(stderr,
+				"Warning: ignoring add/delete action "
+				"because no address or label was specified. "
+				"This will be an error in the future.\n");
+		}
+
+		if (update_by_address) {
+			fprintf(stderr,
+				"Warning: ignoring select-by-address options (-i/-l/-m) "
+				"because no peer address was specified. "
+				"This will be an error in the future.\n");
+		}
+
+		goto skip_json;
+	}
+#endif
+
+	if (!update_by_label && !update_by_address) {
+		if (bmt == 0) {
 			goto skip_json;
 		}
 
-		fprintf(stderr, "you must specify a remote peer\n");
+		fprintf(stderr, "you must specify a remote peer or label\n");
+		exit(1);
+	}
+
+	if (update_by_address && update_by_label) {
+		fprintf(stderr, "cannot use select-by-address options (-p/-i/-l/-m) "
+			"when selecting peer by label\n");
+		exit(1);
+	}
+
+	if (update_by_address && peer.sa_sin.sin_family == 0) {
+		fprintf(stderr, "you must specify a remote peer "
+			"when using any of -i/-l/-m\n");
 		exit(1);
 	}
 
@@ -268,6 +314,24 @@ int main(int argc, char *argv[])
 skip_json:
 	if ((csock = control_init(ctl_path)) == -1) {
 		exit(1);
+	}
+
+	if (bmt == 0) {
+		if (update_by_label) {
+			fprintf(stderr, "can't specify label without add or del action\n");
+			exit(1);
+		}
+		if (update_by_address) {
+#if BFDCTL_BACKWARDS_COMPAT
+			fprintf(stderr,
+				"Warning: ignoring peer address without add or del action. "
+				"This will be an error in the future.\n");
+#else
+			fprintf(stderr,
+				"can't specify peer address without add or del action\n");
+			exit(1);
+#endif
+		}
 	}
 
 	if (bmt != 0) {
