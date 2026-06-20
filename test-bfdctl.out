@@ -68,7 +68,7 @@ Notification:
   "id":1,
   "remote-id":1,
   "state":"down",
-  "downtime":10,
+  "downtime":893,
   "diagnostics":0,
   "remote-diagnostics":0
 }
@@ -81,13 +81,14 @@ Notification:
   "id":1,
   "remote-id":1,
   "state":"down",
-  "downtime":10,
+  "downtime":893,
   "diagnostics":0,
   "remote-diagnostics":0
 }
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -m
 
+Warning: ignoring select-by-address options (-i/-l/-m) because no peer address was specified. This will be an error in the future.
 Response:
 {
   "status":"ok"
@@ -119,7 +120,7 @@ Notification:
   "id":1,
   "remote-id":1,
   "state":"down",
-  "downtime":10,
+  "downtime":894,
   "diagnostics":0,
   "remote-diagnostics":0
 }
@@ -132,7 +133,7 @@ Notification:
   "id":1,
   "remote-id":1,
   "state":"down",
-  "downtime":10,
+  "downtime":894,
   "diagnostics":0,
   "remote-diagnostics":0
 }
@@ -157,7 +158,7 @@ Notification:
   "id":1,
   "remote-id":1,
   "state":"down",
-  "downtime":11,
+  "downtime":895,
   "diagnostics":0,
   "remote-diagnostics":0
 }
@@ -170,27 +171,15 @@ Response:
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -L foo -p 192.168.16.1
 
-Response:
-{
-  "status":"error",
-  "error":"failed to parse notify data"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -L foo -m -p 192.168.16.1
 
-Response:
-{
-  "status":"error",
-  "error":"failed to parse notify data"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -L foo -m
 
-Response:
-{
-  "status":"error",
-  "error":"failed to parse notify data"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -L foo
 
@@ -204,11 +193,11 @@ Response:
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a
 
-../test-bfdctl.sh: linia 47:  1792 Naruszenie ochrony pamięci(zrzut pamięci) run "$@"
+you must specify a remote peer or label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -m
 
-../test-bfdctl.sh: linia 48:  1801 Naruszenie ochrony pamięci(zrzut pamięci) run "$@"
+you must specify a remote peer when using any of -i/-l/-m
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -m -p 192.168.16.1
 
@@ -239,7 +228,7 @@ Notification:
   "id":1,
   "remote-id":1,
   "state":"down",
-  "downtime":15,
+  "downtime":899,
   "diagnostics":0,
   "remote-diagnostics":0
 }
@@ -252,42 +241,15 @@ Response:
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -L foo -p 192.168.16.1
 
-Response:
-{
-  "status":"error",
-  "error":"request add failed"
-}
-Response:
-{
-  "status":"error",
-  "error":"failed to parse notify data"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -L foo -m -p 192.168.16.1
 
-Response:
-{
-  "status":"error",
-  "error":"request add failed"
-}
-Response:
-{
-  "status":"error",
-  "error":"failed to parse notify data"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -L foo -m
 
-Response:
-{
-  "status":"error",
-  "error":"request add failed"
-}
-Response:
-{
-  "status":"error",
-  "error":"failed to parse notify data"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -L foo
 
@@ -306,11 +268,11 @@ Response:
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a
 
-you must specify a remote peer
+you must specify a remote peer or label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -m
 
-you must specify a remote peer
+you must specify a remote peer when using any of -i/-l/-m
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -m -p 192.168.16.1
 
@@ -329,27 +291,15 @@ Response:
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -L foo -p 192.168.16.1
 
-Response:
-{
-  "status":"error",
-  "error":"request add failed"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -L foo -m -p 192.168.16.1
 
-Response:
-{
-  "status":"error",
-  "error":"request add failed"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -L foo -m
 
-Response:
-{
-  "status":"error",
-  "error":"request add failed"
-}
+cannot use select-by-address options (-p/-i/-l/-m) when selecting peer by label
 
 ---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -L foo
 
