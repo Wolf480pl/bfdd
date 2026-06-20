@@ -1,0 +1,360 @@
+
+======= NO  OP / NO MON =======
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock
+
+you must specify an operation
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -m
+
+you must specify an operation
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -m -p 192.168.16.1
+
+you must specify an operation
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -p 192.168.16.1
+
+you must specify an operation
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -L foo -p 192.168.16.1
+
+you must specify an operation
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -L foo -m -p 192.168.16.1
+
+you must specify an operation
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -L foo -m
+
+you must specify an operation
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -L foo
+
+you must specify an operation
+
+======= NO  OP /    MON =======
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M
+
+Response:
+{
+  "status":"ok"
+}
+Listening for events
+Notification:
+{
+  "op":"add",
+  "ipv6":false,
+  "multihop":false,
+  "peer-address":"192.168.16.1",
+  "detect-multiplier":3,
+  "receive-interval":300,
+  "transmit-interval":300,
+  "echo-interval":50,
+  "remote-detect-multiplier":0,
+  "remote-receive-interval":0,
+  "remote-transmit-interval":0,
+  "remote-echo-interval":0,
+  "echo-mode":false,
+  "shutdown":false
+}
+Notification:
+{
+  "op":"status",
+  "ipv6":false,
+  "multihop":false,
+  "peer-address":"192.168.16.1",
+  "id":1,
+  "remote-id":1,
+  "state":"down",
+  "downtime":10,
+  "diagnostics":0,
+  "remote-diagnostics":0
+}
+Notification:
+{
+  "op":"status",
+  "ipv6":false,
+  "multihop":false,
+  "peer-address":"192.168.16.1",
+  "id":1,
+  "remote-id":1,
+  "state":"down",
+  "downtime":10,
+  "diagnostics":0,
+  "remote-diagnostics":0
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -m
+
+Response:
+{
+  "status":"ok"
+}
+Listening for events
+Notification:
+{
+  "op":"add",
+  "ipv6":false,
+  "multihop":false,
+  "peer-address":"192.168.16.1",
+  "detect-multiplier":3,
+  "receive-interval":300,
+  "transmit-interval":300,
+  "echo-interval":50,
+  "remote-detect-multiplier":0,
+  "remote-receive-interval":0,
+  "remote-transmit-interval":0,
+  "remote-echo-interval":0,
+  "echo-mode":false,
+  "shutdown":false
+}
+Notification:
+{
+  "op":"status",
+  "ipv6":false,
+  "multihop":false,
+  "peer-address":"192.168.16.1",
+  "id":1,
+  "remote-id":1,
+  "state":"down",
+  "downtime":10,
+  "diagnostics":0,
+  "remote-diagnostics":0
+}
+Notification:
+{
+  "op":"status",
+  "ipv6":false,
+  "multihop":false,
+  "peer-address":"192.168.16.1",
+  "id":1,
+  "remote-id":1,
+  "state":"down",
+  "downtime":10,
+  "diagnostics":0,
+  "remote-diagnostics":0
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -m -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -p 192.168.16.1
+
+bcm_recv: expected id 1, but got 0
+Notification:
+{
+  "op":"status",
+  "ipv6":false,
+  "multihop":false,
+  "peer-address":"192.168.16.1",
+  "id":1,
+  "remote-id":1,
+  "state":"down",
+  "downtime":11,
+  "diagnostics":0,
+  "remote-diagnostics":0
+}
+bcm_recv: expected id 0, but got 1
+Listening for events
+Response:
+{
+  "status":"ok"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -L foo -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -L foo -m -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -L foo -m
+
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -L foo
+
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+======= ADD OP /    MON =======
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a
+
+../test-bfdctl.sh: linia 47:  1792 Naruszenie ochrony pamięci(zrzut pamięci) run "$@"
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -m
+
+../test-bfdctl.sh: linia 48:  1801 Naruszenie ochrony pamięci(zrzut pamięci) run "$@"
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -m -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -p 192.168.16.1
+
+Response:
+{
+  "status":"ok"
+}
+bcm_recv: expected id 2, but got 0
+Notification:
+{
+  "op":"status",
+  "ipv6":false,
+  "multihop":false,
+  "peer-address":"192.168.16.1",
+  "id":1,
+  "remote-id":1,
+  "state":"down",
+  "downtime":15,
+  "diagnostics":0,
+  "remote-diagnostics":0
+}
+bcm_recv: expected id 0, but got 2
+Listening for events
+Response:
+{
+  "status":"ok"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -L foo -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -L foo -m -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -L foo -m
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -M -a -L foo
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+Response:
+{
+  "status":"error",
+  "error":"failed to parse notify data"
+}
+
+======= ADD OP / NO MON =======
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a
+
+you must specify a remote peer
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -m
+
+you must specify a remote peer
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -m -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -p 192.168.16.1
+
+Response:
+{
+  "status":"ok"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -L foo -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -L foo -m -p 192.168.16.1
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -L foo -m
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
+
+---- ../bfdctl -C /tmp/bfdd/bfdd.sock -a -L foo
+
+Response:
+{
+  "status":"error",
+  "error":"request add failed"
+}
