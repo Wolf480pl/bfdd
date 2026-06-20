@@ -229,22 +229,18 @@ int main(int argc, char *argv[])
 	}
 
 #if BFDCTL_BACKWARDS_COMPAT
-	if (peer.sa_sin.sin_family == 0 && !update_by_label && monitor) {
+	if (peer.sa_sin.sin_family == 0 && !update_by_label && monitor && bmt == 0) {
 		/*
 		 * Historically, when passing `-M` but no `-p`,
-		 * other options related to adding/deleting
-		 * (nonempty action, multihop, local address, local interface)
+		 * other options related to peer addres
+		 * (multihop, local address, local interface)
 		 * were allowed and simply ignored.
+		 *
 		 * Preserve that behaviour for backwards compatibility.
+		 *
+		 * Passing -M -a or -M -d without -p used to crash,
+		 * so we don't need to preserve that (hence bmt == 0 check above)
 		 */
-		if (bmt != 0) {
-			fprintf(stderr,
-				"Warning: ignoring add/delete action "
-				"because no address or label was specified. "
-				"This will be an error in the future.\n");
-			bmt = 0;
-		}
-
 		if (update_by_address) {
 			fprintf(stderr,
 				"Warning: ignoring select-by-address options (-i/-l/-m) "
