@@ -242,6 +242,7 @@ int main(int argc, char *argv[])
 				"Warning: ignoring add/delete action "
 				"because no address or label was specified. "
 				"This will be an error in the future.\n");
+			bmt = 0;
 		}
 
 		if (update_by_address) {
@@ -321,24 +322,6 @@ int main(int argc, char *argv[])
 skip_json:
 	if ((csock = control_init(ctl_path)) == -1) {
 		exit(1);
-	}
-
-	if (bmt == 0) {
-		if (update_by_label) {
-			fprintf(stderr, "can't specify label without add or del action\n");
-			exit(1);
-		}
-		if (update_by_address) {
-#if BFDCTL_BACKWARDS_COMPAT
-			fprintf(stderr,
-				"Warning: ignoring peer address without add or del action. "
-				"This will be an error in the future.\n");
-#else
-			fprintf(stderr,
-				"can't specify peer address without add or del action\n");
-			exit(1);
-#endif
-		}
 	}
 
 	if (bmt != 0) {
